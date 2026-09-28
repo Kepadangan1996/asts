@@ -282,6 +282,15 @@ header {
   text-align: center;
   border: 2px solid var(--primary);
 }
+.timestamp-box {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #d1d5db;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  text-align: left;
+  line-height: 1.5;
+}
 </style>
 </head>
 <body oncontextmenu="return false;"> <!-- Mencegah Klik Kanan -->
@@ -378,10 +387,17 @@ header {
         <span>Nomor Urut:</span>
         <strong id="success-number">-</strong>
       </div>
+      
       <div class="score-box">
         <span style="font-size: 0.9rem; color: var(--text-light); font-weight: bold; letter-spacing: 1px;">SKOR PENILAIAN</span>
         <div style="font-size: 3rem; font-weight: bold; color: var(--primary); line-height: 1.2; margin: 0.25rem 0;" id="success-score">0</div>
         <div style="font-size: 0.95rem; color: var(--text-dark);" id="success-detail">Benar: 0 dari 40 soal</div>
+
+        <!-- TIME STAMP DI BAWAH SKOR PENILAIAN -->
+        <div class="timestamp-box">
+          <div>Telah selesai dikerjakan pada tanggal : <strong id="success-date">-</strong></div>
+          <div>Waktu : <strong id="success-time">-</strong></div>
+        </div>
       </div>
     </div>
   </div>
@@ -863,6 +879,21 @@ function showSuccessPage() {
   }
 
   const scoreData = calculateScore();
+  const now = new Date();
+
+  // Format Tanggal Indonesia (contoh: 28 September 2026)
+  const formattedDate = now.toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  // Format Waktu Indonesia (contoh: 12:08:15 WIB)
+  const formattedTime = now.toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }).replace(/\./g, ':') + ' WIB';
 
   document.getElementById('submit-modal').style.display = 'none';
   document.getElementById('exam-section').style.display = 'none';
@@ -874,6 +905,10 @@ function showSuccessPage() {
   document.getElementById('success-number').innerText = student.no_urut;
   document.getElementById('success-score').innerText = scoreData.score;
   document.getElementById('success-detail').innerText = `Benar: ${scoreData.correctCount} dari ${scoreData.totalQuestions} soal`;
+
+  // Menampilkan Timestamp
+  document.getElementById('success-date').innerText = formattedDate;
+  document.getElementById('success-time').innerText = formattedTime;
 
   document.getElementById('success-section').style.display = 'block';
 }
